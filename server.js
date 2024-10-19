@@ -24,7 +24,6 @@ db.sequelize.sync()
     console.log("Failed to sync db: " + err.message);
   });
 
-require("./app/routes/turorial.routes")(app);
 require("./app/routes/disease.routes")(app);
 
 const PORT = process.env.PORT || 8080;
