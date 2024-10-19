@@ -1,5 +1,5 @@
 const db = require("../models");
-const Disease = db.diseases;
+const Disease = db.disease;
 
 console.log(Disease);
 

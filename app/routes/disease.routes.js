@@ -1,13 +1,13 @@
 module.exports = app => {
-    const diseases = require("../controllers/disease.controller.js");
+    const disease = require("../controllers/disease.controller.js");
   
     var router = require("express").Router();
 
-    console.log(diseases);
+    console.log(disease);
   
-    router.get("/", diseases.findAll);
+    router.get("/", disease.findAll);
 
-    router.get("/:id", diseases.findOne);
+    router.get("/:id", disease.findOne);
   
     app.use('/api/diseases', router);
 };

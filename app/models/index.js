@@ -1,24 +1,43 @@
-const dbConfig = require("../config/db.config.js");
+const { sequelize, Sequelize } = require('./sequelize');
+const Disease = require('./disease.model.js');
+const Symptom = require('./symptom.model.js');
+const Medicine = require('./medicine.model.js');
+const DiseaseSymptom = require('./diseaseSymptom.model.js');
+const DiseaseMedicine = require('./diseaseMedicine.model.js');
 
-const Sequelize = require("sequelize");
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-    host: dbConfig.HOST,
-    dialect: dbConfig.dialect,
-    operatorsAliases: 0,
-    port: dbConfig.port,
-    pool: {
-        max: dbConfig.pool.max,
-        min: dbConfig.pool.min,
-        acquire: dbConfig.pool.acquire,
-        idle: dbConfig.pool.idle
-    }
+Symptom.belongsToMany(Disease, {
+    through: DiseaseSymptom,
+    foreignKey: 'symptomId',
+    otherKey: 'diseaseId'
+});
+
+Disease.belongsToMany(Symptom, {
+    through: DiseaseSymptom,
+    foreignKey: 'diseaseId',
+    otherKey: 'symptomId'
+});
+
+Disease.belongsToMany(Medicine, {
+    through: DiseaseMedicine,
+    foreignKey: 'diseaseId',
+    otherKey: 'medicineId'
+});
+
+Medicine.belongsToMany(Disease, {
+    through: DiseaseMedicine,
+    foreignKey: 'medicineId',
+    otherKey: 'diseaseId'
 });
 
 const db = {};
 
-db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-db.diseases = require("./disease.model.js")(sequelize, Sequelize);
+db.disease = Disease;
+db.symptom = Symptom;
+db.medicine = Medicine;
+db.diseaseSymptom = DiseaseSymptom;
+db.DiseaseMedicine = DiseaseMedicine;
 
 module.exports = db;
