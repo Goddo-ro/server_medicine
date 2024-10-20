@@ -1,3 +1,4 @@
+const { or, fn, col, Op, where } = require("sequelize");
 const db = require("../models");
 const DiseaseSymptom = require("../models/diseaseSymptom.model");
 const Disease = db.disease;
@@ -28,16 +29,6 @@ module.exports.findAll = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
-    // Disease.findAll()
-    //     .then(data => {
-    //         res.send(data);
-    //     })
-    //     .catch(err => {
-    //         res.status(500).send({
-    //           message:
-    //             err.message || "Some error occurred while retrieving tutorials."
-    //         });
-    //     });
 };
 
 module.exports.findOne = async (req, res) => {
@@ -70,3 +61,39 @@ module.exports.findOne = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+module.exports.getBySearch = async (req, res) => {
+    try {
+        const searchTerm = req.params.search || '';
+
+        const disease = await Disease.findOne({
+            where: where(
+                fn('lower', col('title')),
+                {
+                  [Op.like]: `%${searchTerm.toLowerCase()}%`
+                }
+              ),
+            include: [
+                {
+                    model: Symptom,
+                    as: 'symptoms',
+                    through: { attributes: [] }
+                },
+                {
+                    model: Medicine,
+                    as: 'medicines',
+                    through: { attributes: [] }
+                }
+            ]
+        });
+
+        if (!disease) {
+            return res.status(404).json({ message: 'Diseases not found' });
+        }
+
+        res.json(disease);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}

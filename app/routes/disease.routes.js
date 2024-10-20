@@ -6,6 +6,8 @@ module.exports = app => {
     router.get("/", disease.findAll);
 
     router.get("/:id", disease.findOne);
+
+    router.get("/search:search", disease.getBySearch)
   
     app.use('/api/diseases', router);
 };
