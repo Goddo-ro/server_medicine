@@ -1,7 +1,7 @@
 const { sequelize, Sequelize } = require("./sequelize");
 
 const DiseaseMedicine = sequelize.define("diseaseMedicine", {
-    diseaseId: {
+    disease_id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         references: {
@@ -9,7 +9,7 @@ const DiseaseMedicine = sequelize.define("diseaseMedicine", {
             key: 'id'
         }
     },
-    medicineId: {
+    medicine_id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         references: {
@@ -18,7 +18,7 @@ const DiseaseMedicine = sequelize.define("diseaseMedicine", {
         }
     }
 }, {
-    tableName: 'diseaseMedicine',
+    tableName: 'disease_medicine',
     timestamps: false
 });
 

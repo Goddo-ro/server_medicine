@@ -12,7 +12,7 @@ const Medicine = sequelize.define("medicine", {
         type: Sequelize.TEXT,
         allowNull: false
     },
-    desctiption: {
+    description: {
         type: Sequelize.TEXT,
         allowNull: true,
     }

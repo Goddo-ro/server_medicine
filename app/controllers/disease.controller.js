@@ -1,37 +1,72 @@
 const db = require("../models");
+const DiseaseSymptom = require("../models/diseaseSymptom.model");
 const Disease = db.disease;
+const Symptom = db.symptom;
+const Medicine = db.medicine;
 
-console.log(Disease);
-
-module.exports.findAll = (req, res) => {
-    Disease.findAll()
-        .then(data => {
-            res.send(data);
+module.exports.findAll = async (req, res) => {
+    try {
+        const diseases = await Disease.findAll({
+            include: [
+                {
+                    model: Symptom,
+                    as: 'symptoms'
+                },
+                {
+                    model: Medicine,
+                    as: 'medicines'
+                }
+            ]
         })
-        .catch(err => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while retrieving tutorials."
-            });
-        });
+
+        if (!diseases) {
+            return res.status(404).json({ message: 'Diseases not found' });
+        }
+
+        res.json(diseases);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+    // Disease.findAll()
+    //     .then(data => {
+    //         res.send(data);
+    //     })
+    //     .catch(err => {
+    //         res.status(500).send({
+    //           message:
+    //             err.message || "Some error occurred while retrieving tutorials."
+    //         });
+    //     });
 };
 
-module.exports.findOne = (req, res) => {
-    const id = req.params.id;
+module.exports.findOne = async (req, res) => {
+    try {
+        const diseaseId = req.params.id;
 
-    Disease.findByPk(id)
-        .then(data => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `Cannot find Disease with id=${id}`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: `Error retrieving Disease with id=${id}`
-            });
+        const disease = await Disease.findOne({
+            where: { id: diseaseId },
+            include: [
+                {
+                    model: Symptom,
+                    as: 'symptoms',
+                    through: { attributes: [] }
+                },
+                {
+                    model: Medicine,
+                    as: 'medicines',
+                    through: { attributes: [] }
+                }
+            ]
         });
+
+        if (!disease) {
+            return res.status(404).json({ message: 'Disease not found' });
+        }
+
+        res.json(disease);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };

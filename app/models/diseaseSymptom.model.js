@@ -1,24 +1,26 @@
 const { sequelize, Sequelize } = require("./sequelize");
+const Disease = require('./disease.model');
+const Symptom = require('./symptom.model');
 
-const DiseaseSymptom = sequelize.define("diseasesymptom", {
-    diseaseId: {
+const DiseaseSymptom = sequelize.define("disease_symptom", {
+    disease_id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         references: {
-            model: 'disease',
+            model: Disease,
             key: 'id'
         }
     },
-    symptomId: {
+    symptom_id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         references: {
-            model: 'symptom',
+            model: Symptom,
             key: 'id'
         }
     }
 }, {
-    tableName: 'diseaseSymptom',
+    tableName: 'disease_symptom',
     timestamps: false
 });
 

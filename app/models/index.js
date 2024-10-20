@@ -7,26 +7,26 @@ const DiseaseMedicine = require('./diseaseMedicine.model.js');
 
 Symptom.belongsToMany(Disease, {
     through: DiseaseSymptom,
-    foreignKey: 'symptomId',
-    otherKey: 'diseaseId'
+    foreignKey: 'symptom_id',
+    otherKey: 'disease_id'
 });
 
 Disease.belongsToMany(Symptom, {
     through: DiseaseSymptom,
-    foreignKey: 'diseaseId',
-    otherKey: 'symptomId'
+    foreignKey: 'disease_id',
+    otherKey: 'symptom_id'
 });
 
 Disease.belongsToMany(Medicine, {
     through: DiseaseMedicine,
-    foreignKey: 'diseaseId',
-    otherKey: 'medicineId'
+    foreignKey: 'disease_id',
+    otherKey: 'medicine_id'
 });
 
 Medicine.belongsToMany(Disease, {
     through: DiseaseMedicine,
-    foreignKey: 'medicineId',
-    otherKey: 'diseaseId'
+    foreignKey: 'medicine_id',
+    otherKey: 'disease_id'
 });
 
 const db = {};
