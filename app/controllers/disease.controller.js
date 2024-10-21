@@ -63,7 +63,7 @@ module.exports.findOne = async (req, res) => {
     }
 };
 
-module.exports.getBySearch = async (req, res) => {
+module.exports.findBySearch = async (req, res) => {
     try {
         const searchTerm = req.params.search || '';
 
