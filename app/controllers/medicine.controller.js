@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const db = require("../models");
 const Disease = db.disease;
 const Medicine = db.medicine;
+const Type = db.type;
 
 module.exports.findAll = async (req, res) => {
     try {
@@ -10,6 +11,11 @@ module.exports.findAll = async (req, res) => {
                 {
                     model: Disease,
                     as: 'diseases',
+                    through: { attributes: [] }
+                },
+                {
+                    model: Type,
+                    as: 'type',
                 }
             ]
         });

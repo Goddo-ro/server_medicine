@@ -10,11 +10,13 @@ module.exports.findAll = async (req, res) => {
             include: [
                 {
                     model: Symptom,
-                    as: 'symptoms'
+                    as: 'symptoms',
+                    through: { attributes: [] }
                 },
                 {
                     model: Medicine,
-                    as: 'medicines'
+                    as: 'medicines',
+                    through: { attributes: [] }
                 }
             ]
         })
