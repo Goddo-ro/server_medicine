@@ -27,6 +27,7 @@ db.sequelize.sync()
 require("./app/routes/disease.routes")(app);
 require("./app/routes/medicine.routes")(app);
 require("./app/routes/transaction.routes")(app);
+require("./app/routes/types.routes")(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
