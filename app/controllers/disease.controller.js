@@ -1,6 +1,5 @@
-const { or, fn, col, Op, where } = require("sequelize");
+const { fn, col, Op, where } = require("sequelize");
 const db = require("../models");
-const DiseaseSymptom = require("../models/diseaseSymptom.model");
 const Disease = db.disease;
 const Symptom = db.symptom;
 const Medicine = db.medicine;
