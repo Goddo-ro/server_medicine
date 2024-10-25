@@ -3,6 +3,9 @@ module.exports = app => {
     const router = require("express").Router();
 
     router.get("/", medicine.findAll);
+    router.post("/", medicine.add);
+    router.put("/:id", medicine.update);
+    router.delete("/:id", medicine.delete);
     router.get("/:id", medicine.findById);
     router.get("/search/:search", medicine.findBySearch);
 
