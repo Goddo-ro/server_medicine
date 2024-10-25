@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -9,9 +10,8 @@ var corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
-
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
@@ -28,6 +28,11 @@ require("./app/routes/disease.routes")(app);
 require("./app/routes/medicine.routes")(app);
 require("./app/routes/transaction.routes")(app);
 require("./app/routes/types.routes")(app);
+require("./app/routes/firebase.routes")(app);
+
+app.get('/', (req, res) => {
+  res.send("Hello, Firebase!");
+})
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
