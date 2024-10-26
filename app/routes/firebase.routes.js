@@ -7,6 +7,7 @@ module.exports = app => {
     router.post('/login', firebaseAuthController.loginUser);
     router.post('/logout', firebaseAuthController.logoutUser);
     router.post('/reset-password', firebaseAuthController.resetPassword);
+    router.get('/isLoggedIn', firebaseAuthController.isLoggedIn);
 
     app.use('/api/auth', router); 
 }

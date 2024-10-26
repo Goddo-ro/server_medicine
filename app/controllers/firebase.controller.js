@@ -4,7 +4,8 @@ const {
     signInWithEmailAndPassword, 
     signOut, 
     sendEmailVerification,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    admin
 } = require('../config/firebase.config');
 
 const auth = getAuth();
@@ -74,7 +75,7 @@ class FirebaseAuthController {
           });
     }
 
-    resetPassword(req, res){
+    resetPassword(req, res) {
         const { email } = req.body;
         if (!email ) {
           return res.status(422).json({
@@ -88,6 +89,24 @@ class FirebaseAuthController {
           .catch((error) => {
             console.error(error);
             res.status(500).json({ error: "Internal Server Error" });
+          });
+    }
+
+    isLoggedIn(req, res) {
+      const idToken = req.cookies.access_token;
+
+      if (!idToken) {
+          return res.status(401).json({ message: "User is not logged in" });
+      }
+
+      admin.auth().verifyIdToken(idToken)
+          .then((decodedToken) => {
+              const uid = decodedToken.uid;
+              res.status(200).json({ message: "User is logged in", uid });
+          })
+          .catch((error) => {
+              console.error("Error verifying token:", error);
+              res.status(401).json({ message: "Invalid token, user is not logged in" });
           });
     }
 }
