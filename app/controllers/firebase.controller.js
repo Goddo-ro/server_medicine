@@ -67,15 +67,28 @@ class FirebaseAuthController {
     }
 
     logoutUser(req, res) {
-        signOut(auth)
-          .then(() => {
-            res.clearCookie('access_token');
-            res.status(200).json({ message: "User logged out successfully" });
-          })
-          .catch((error) => {
-            console.error(error);
-            res.status(500).json({ error: "Internal Server Error" });
-          });
+      if (!req.cookies['access_token']) {
+        res.status(200).json({ message: "User logged out successfully" });
+      }
+      signOut(auth)
+        .then(() => {
+          console.log(req.cookies)
+          admin.auth().verifyIdToken(req.cookies['access_token'])
+            .then((decodedToken) => {
+              const uid = decodedToken.uid;
+              admin.auth().revokeRefreshTokens(uid);
+              res.clearCookie('access_token');
+              res.status(200).json({ message: "User logged out successfully" });
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).json({ error: "Internal Server Error" });
+            });
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).json({ error: "Internal Server Error" });
+        });
     }
 
     resetPassword(req, res) {
@@ -102,7 +115,7 @@ class FirebaseAuthController {
           return res.status(401).json({ message: "User is not logged in" });
       }
 
-      admin.auth().verifyIdToken(idToken)
+      admin.auth().verifyIdToken(idToken, true)
           .then((decodedToken) => {
               const uid = decodedToken.uid;
               res.status(200).json({ message: "User is logged in", uid });
