@@ -25,6 +25,9 @@ const Transaction = sequelize.define("transaction", {
     },
     expiration_date: {
         type: Sequelize.DATE
+    },
+    user_uid: {
+        type: Sequelize.TEXT
     }
 }, {
     tableName: 'transaction',

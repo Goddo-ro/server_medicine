@@ -1,4 +1,7 @@
 const db = require("../models");
+const { 
+    admin
+} = require('../config/firebase.config');
 const Transaction = db.transaction;
 const Medicine = db.medicine;
 
@@ -31,11 +34,15 @@ module.exports.findAll = async (req, res) => {
 module.exports.add = async (req, res) => {
     try {
         const { medicine_id, count, purchase_date, expiration_date } = req.body;
+        const token = req.cookies['access_token'];
+        const decodedToken = await admin.auth().verifyIdToken(token, true)
+        const uid = decodedToken.uid;
         const transactionData = {
             medicine_id,
             count,
             purchase_date: purchase_date || new Date(),
-            expiration_date
+            expiration_date,
+            user_uid: uid,
         };
         const newTransaction = await Transaction.create(transactionData);
         res.status(201).json(newTransaction);
