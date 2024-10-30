@@ -9,13 +9,19 @@ const Medicine = db.medicine;
 
 module.exports.findAll = async (req, res) => {
     try {
+        const token = req.cookies['access_token'];
+        const decodedToken = await admin.auth().verifyIdToken(token, true)
+        const uid = decodedToken.uid;
         const transactions = await Transaction.findAll({
             include: [
                 {
                     model: Medicine,
                     as: 'medicine',
                 },
-            ]
+            ],
+            where: {
+                user_uid: uid,
+            }
         });
 
         if (!transactions) {
