@@ -8,7 +8,17 @@ const Type = db.type;
 
 module.exports.findAll = async (req, res) => {
     try {
+        const { startsWith } = req.body;
+        const whereCondition = startsWith
+            ? {
+                title: {
+                    [Op.iLike]: `${startsWith}%`
+                }
+            }
+            : {};
+
         const medicine = await Medicine.findAll({
+            where: whereCondition,
             include: [
                 {
                     model: Disease,
@@ -92,6 +102,36 @@ module.exports.findBySearch = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
+}
+
+module.exports.getPrefixes = async (req, res) => {
+    try {
+        const medicines = await Medicine.findAll({
+            attributes: ['title'],
+            raw: true
+        });
+
+        const groupedData = medicines.reduce((acc, { title }) => {
+            const firstLetter = title[0].toUpperCase();
+            const twoLetterPrefix = title.slice(0, 2).toUpperCase();
+
+            if (!acc[firstLetter]) {
+                acc[firstLetter] = new Set();
+            }
+
+            acc[firstLetter].add(twoLetterPrefix);
+
+            return acc;
+        }, {});
+
+        const result = Object.entries(groupedData).map(([letter, prefixes]) => ({
+            [letter]: Array.from(prefixes)
+        }));
+
+        res.json(result);
+   } catch (error) {
+        res.status(500).json({ error: "Internal server error", details: error.message });
+   }
 }
 
 // POST

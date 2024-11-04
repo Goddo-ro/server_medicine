@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "http://localhost",
   credentials: true,
 };
 
@@ -31,9 +31,7 @@ require("./app/routes/transaction.routes")(app);
 require("./app/routes/types.routes")(app);
 require("./app/routes/firebase.routes")(app);
 
-app.get('/', (req, res) => {
-  res.send("Hello, Firebase!");
-})
+// TODO: rewrite auth with Basic Auth
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
