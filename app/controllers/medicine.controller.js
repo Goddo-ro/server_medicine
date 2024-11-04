@@ -8,14 +8,35 @@ const Type = db.type;
 
 module.exports.findAll = async (req, res) => {
     try {
-        const { startsWith } = req.body;
-        const whereCondition = startsWith
+        const { startsWith, search } = req.body;
+        const startsWithCondition = startsWith
             ? {
                 title: {
                     [Op.iLike]: `${startsWith}%`
                 }
             }
             : {};
+        const searchCondition = search
+            ? {
+                [Op.or]: [
+                    {
+                        title: {
+                            [Op.iLike]: `%${search}%`
+                        }
+                    },
+                    {
+                        description: {
+                            [Op.iLike]: `%${search}%`
+                        }
+                    }
+                ]
+            }
+            : {};
+
+        const whereCondition = {
+            ...startsWithCondition,
+            ...searchCondition
+        };
 
         const medicine = await Medicine.findAll({
             where: whereCondition,
@@ -67,38 +88,6 @@ module.exports.findById = async (req, res) => {
 
         res.json(medicine);
     }  catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-}
-
-module.exports.findBySearch = async (req, res) => {
-    try {
-        const searchTerm = req.params.search || '';
-
-        const medicine = await Medicine.findAll({
-            where: {
-                [Op.or]: [
-                    {
-                        title: {
-                            [Op.iLike]: `%${searchTerm}%`
-                        }
-                    },
-                    {
-                        description: {
-                            [Op.iLike]: `%${searchTerm}%`
-                        }
-                    }
-                ]
-            }
-        });
-
-        if (!medicine) {
-            return res.status(404).json({ message: 'Medicine not found' });
-        }
-
-        res.json(medicine);
-    } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
