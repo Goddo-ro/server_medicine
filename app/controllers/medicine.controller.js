@@ -16,6 +16,7 @@ module.exports.findAll = async (req, res) => {
                 }
             }
             : {};
+
         const searchCondition = search
             ? {
                 [Op.or]: [
@@ -102,7 +103,7 @@ module.exports.getPrefixes = async (req, res) => {
 
         const groupedData = medicines.reduce((acc, { title }) => {
             const firstLetter = title[0].toUpperCase();
-            const twoLetterPrefix = title.slice(0, 2).toUpperCase();
+            const twoLetterPrefix = title.slice(0, 1).toUpperCase() + title.slice(1, 2).toLowerCase();
 
             if (!acc[firstLetter]) {
                 acc[firstLetter] = new Set();
