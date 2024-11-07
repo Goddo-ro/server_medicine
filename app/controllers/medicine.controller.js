@@ -114,9 +114,11 @@ module.exports.getPrefixes = async (req, res) => {
             return acc;
         }, {});
 
-        const result = Object.entries(groupedData).map(([letter, prefixes]) => ({
-            [letter]: Array.from(prefixes)
-        }));
+        const result = {};
+
+        for (const [letter, prefixes] of Object.entries(groupedData)) {
+            result[letter] = Array.from(prefixes);
+        }
 
         res.json(result);
    } catch (error) {
