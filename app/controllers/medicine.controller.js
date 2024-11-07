@@ -8,7 +8,9 @@ const Type = db.type;
 
 module.exports.findAll = async (req, res) => {
     try {
-        const { startsWith, search } = req.body;
+        const startsWith = req.query.startsWith ?? '';
+        const search = req.query.search ?? '';
+
         const startsWithCondition = startsWith
             ? {
                 title: {
@@ -92,6 +94,57 @@ module.exports.findById = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
+}
+
+module.exports.getPrefixesWithWords = async (req, res) => {
+    try {
+        const startsWith = req.query.startsWith ?? '';
+
+        const startsWithCondition = startsWith
+            ? {
+                title: {
+                    [Op.iLike]: `${startsWith}%`
+                }
+            }
+            : {};
+        
+        const medicine = await Medicine.findAll({
+            where: startsWithCondition,
+            include: [
+                {
+                    model: Disease,
+                    as: 'diseases',
+                    through: { attributes: [] }
+                },
+                {
+                    model: Type,
+                    as: 'type',
+                }
+            ],
+            attributes: ['title'],
+        });
+
+        if (!medicine) {
+            return res.status(404).json({ message: 'Medicine not found' });
+        }
+
+        const groupedData = medicine.reduce((acc, { title }) => {
+            const twoLetterPrefix = title.slice(0, 1).toUpperCase() + title.slice(1, 2).toLowerCase();
+
+            if (!acc[twoLetterPrefix]) {
+                acc[twoLetterPrefix] = [];
+            }
+
+            acc[twoLetterPrefix].push(title);
+
+            return acc;
+        }, {});
+
+        res.json(groupedData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    } 
 }
 
 module.exports.getPrefixes = async (req, res) => {

@@ -5,6 +5,7 @@ module.exports = app => {
     router.get("/", medicine.findAll);
     router.post("/", medicine.add);
     router.get("/prefixes", medicine.getPrefixes);
+    router.get("/prefixes/words", medicine.getPrefixesWithWords);
     router.get("/:id", medicine.findById);
     router.put("/:id", medicine.update);
     router.delete("/:id", medicine.delete);
