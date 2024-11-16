@@ -96,6 +96,43 @@ module.exports.findById = async (req, res) => {
     }
 }
 
+module.exports.getByName = async (req, res) => {
+    try {
+        const title = req.params.title ?? '';
+
+        console.log("TITLE", title);
+        console.log(req.params)
+        console.log(req)
+
+        const medicine = await Medicine.findOne({
+            where: {
+                title: {
+                    [Op.iLike]: `${title}`
+                }
+            },
+            include: [
+                {
+                    model: Disease,
+                    as: 'diseases',
+                },
+                {
+                    model: Type,
+                    as: 'type'
+                } 
+            ]
+        })
+
+        if (!medicine) {
+            return res.status(404).json({ message: 'Medicine not found' });
+        }
+
+        res.json(medicine);
+    }  catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 module.exports.getPrefixesWithWords = async (req, res) => {
     try {
         const startsWith = req.query.startsWith ?? '';
@@ -121,21 +158,21 @@ module.exports.getPrefixesWithWords = async (req, res) => {
                     as: 'type',
                 }
             ],
-            attributes: ['title'],
+            attributes: ['title', 'id'],
         });
 
         if (!medicine) {
             return res.status(404).json({ message: 'Medicine not found' });
         }
 
-        const groupedData = medicine.reduce((acc, { title }) => {
+        const groupedData = medicine.reduce((acc, { title, id }) => {
             const twoLetterPrefix = title.slice(0, 1).toUpperCase() + title.slice(1, 2).toLowerCase();
 
             if (!acc[twoLetterPrefix]) {
                 acc[twoLetterPrefix] = [];
             }
 
-            acc[twoLetterPrefix].push(title);
+            acc[twoLetterPrefix].push({title, id});
 
             return acc;
         }, {});
