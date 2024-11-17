@@ -3,8 +3,9 @@ module.exports = app => {
     const router = require("express").Router();
 
     router.get("/", disease.findAll);
-    router.get("/:id", disease.findOne);
+    router.get("/prefixes", disease.getPrefixes);
     router.get("/search/:search", disease.findBySearch);
+    router.get("/:id", disease.findOne);
   
-    app.use('/api/diseases', router);
+    app.use('/api/disease', router);
 };

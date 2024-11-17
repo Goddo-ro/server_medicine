@@ -77,6 +77,7 @@ module.exports.findById = async (req, res) => {
                 {
                     model: Disease,
                     as: 'diseases',
+                    through: { attributes: [] }
                 },
                 {
                     model: Type,
