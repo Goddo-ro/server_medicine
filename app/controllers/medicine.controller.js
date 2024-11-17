@@ -180,7 +180,6 @@ module.exports.getPrefixesWithWords = async (req, res) => {
 
         res.json(groupedData);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     } 
 }

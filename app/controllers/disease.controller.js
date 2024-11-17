@@ -130,3 +130,50 @@ module.exports.getPrefixes = async (req, res) => {
         res.status(500).json({ error: "Internal server error", details: error.message });
     }
 }
+
+module.exports.getPrefixesWithWords = async (req, res) => {
+    try {
+        const startsWith = req.query.startsWith ?? '';
+
+        const startsWithCondition = startsWith
+            ? {
+                title: {
+                    [Op.iLike]: `${startsWith}%`
+                }
+            }
+            : {};
+        
+        const diseases = await Disease.findAll({
+            where: startsWithCondition,
+            include: [
+                {
+                    model: Medicine,
+                    as: 'medicines',
+                    through: { attributes: [] }
+                },
+            ],
+            attributes: ['title', 'id'],
+        });
+
+        if (!diseases) {
+            return res.status(404).json({ message: 'Diseases not found' });
+        }
+
+        const groupedData = diseases.reduce((acc, { title, id }) => {
+            const twoLetterPrefix = title.slice(0, 1).toUpperCase() + title.slice(1, 2).toLowerCase();
+
+            if (!acc[twoLetterPrefix]) {
+                acc[twoLetterPrefix] = [];
+            }
+
+            acc[twoLetterPrefix].push({title, id});
+
+            return acc;
+        }, {});
+
+        res.json(groupedData);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}

@@ -4,6 +4,7 @@ module.exports = app => {
 
     router.get("/", disease.findAll);
     router.get("/prefixes", disease.getPrefixes);
+    router.get("/prefixes/words", disease.getPrefixesWithWords);
     router.get("/search/:search", disease.findBySearch);
     router.get("/:id", disease.findOne);
   
