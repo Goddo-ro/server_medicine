@@ -9,7 +9,7 @@ const Medicine = db.medicine;
 
 module.exports.findAll = async (req, res) => {
     try {
-        const token = req.cookies['access_token'];
+        const token = req.headers.authorization.split(' ')[1];
         const decodedToken = await admin.auth().verifyIdToken(token, true)
         const uid = decodedToken.uid;
         const transactions = await Transaction.findAll({
@@ -40,7 +40,7 @@ module.exports.findAll = async (req, res) => {
 module.exports.add = async (req, res) => {
     try {
         const { medicine_id, count, purchase_date, expiration_date } = req.body;
-        const token = req.cookies['access_token'];
+        const token = req.headers.authorization.split(' ')[1];
         const decodedToken = await admin.auth().verifyIdToken(token, true)
         const uid = decodedToken.uid;
         const transactionData = {
