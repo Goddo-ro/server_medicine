@@ -24,10 +24,7 @@ module.exports.findAllBySearch = async (req, res) => {
             },
         });
 
-        res.json({
-            diseases: diseases || [],
-            medicines: medicines || []
-        });
+        res.json([...diseases, ...medicines]);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
