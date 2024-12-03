@@ -30,8 +30,7 @@ require("./app/routes/medicine.routes")(app);
 require("./app/routes/transaction.routes")(app);
 require("./app/routes/types.routes")(app);
 require("./app/routes/firebase.routes")(app);
-
-// TODO: rewrite auth with Basic Auth
+require("./app/routes/search.routes")(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

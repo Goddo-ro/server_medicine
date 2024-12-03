@@ -101,10 +101,6 @@ module.exports.getByName = async (req, res) => {
     try {
         const title = req.params.title ?? '';
 
-        console.log("TITLE", title);
-        console.log(req.params)
-        console.log(req)
-
         const medicine = await Medicine.findOne({
             where: {
                 title: {
